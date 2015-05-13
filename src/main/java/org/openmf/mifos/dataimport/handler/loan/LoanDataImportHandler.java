@@ -175,7 +175,7 @@ public class LoanDataImportHandler extends AbstractDataImportHandler {
             repaymentStrategyId = "5";
         else if (repaymentStrategy.equalsIgnoreCase("Interest Principal Penalties Fees Order")) 
         	repaymentStrategyId = "6";
-        else if (repaymentStrategy.equalsIgnoreCase("Overdue-Due-Penalties-Fee-Interest-Principal")) 
+        else if (repaymentStrategy.equalsIgnoreCase("OverDue Penalties Fees Interest Principle Order")) 
         	repaymentStrategyId = "8";
         String graceOnPrincipalPayment = readAsString(GRACE_ON_PRINCIPAL_PAYMENT_COL, row);
         String graceOnInterestPayment = readAsString(GRACE_ON_INTEREST_PAYMENT_COL, row);
