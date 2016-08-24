@@ -83,7 +83,7 @@ public class AddGuarantorDataImportHandler extends AbstractDataImportHandler  {
         	guarantorTypeId = "3";
         String clientName = readAsString(ENTITY_ID_COL, row);
         String entityId = getIdByName(workbook.getSheet("Clients"), clientName).toString();
-        String clientRelationshipTypeId = readAsInt(CLIENT_RELATIONSHIP_TYPE_COL, row);
+        String clientRelationshipTypeId = getIdByName(workbook.getSheet("CodeValues"), readAsString(CLIENT_RELATIONSHIP_TYPE_COL, row)).toString();
         //String entityId = readAsInt(ENTITY_ID_COL, row);
         String firstname = readAsString(FIRST_NAME_COL, row);
         String lastname = readAsString(LAST_NAME_COL, row);

@@ -45,8 +45,10 @@ public class GroupWorkbookPopulatorTest {
     	 		"\"staffId\": 2,\"staffName\": \"Dzeko, Edin\"}]}");
     	
     	Boolean onlyLoanOfficers = Boolean.FALSE;
-    	GroupWorkbookPopulator groupWorkbookPopulator = new GroupWorkbookPopulator(new OfficeSheetPopulator(restClient),
-    			new PersonnelSheetPopulator(onlyLoanOfficers, restClient), new CenterSheetPopulator(restClient),new ClientSheetPopulator(restClient));
+    	String officeId = "";
+    	String officesContent = null;
+    	GroupWorkbookPopulator groupWorkbookPopulator = new GroupWorkbookPopulator(new OfficeSheetPopulator(restClient, officesContent),
+    			new PersonnelSheetPopulator(onlyLoanOfficers, restClient, officeId), new CenterSheetPopulator(restClient, officeId),new ClientSheetPopulator(restClient, officeId));
     	groupWorkbookPopulator.downloadAndParse();
     	Workbook groupWorkbook = new HSSFWorkbook();
     	Result result = groupWorkbookPopulator.populate(groupWorkbook);

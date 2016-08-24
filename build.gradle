@@ -15,6 +15,7 @@ apply plugin: 'idea'
 apply plugin: 'pmd'
 apply plugin: 'findbugs'
 apply plugin: 'com.bmuschko.tomcat'
+apply plugin: 'application'
 
 sourceCompatibility = JavaVersion.VERSION_1_6
 targetCompatibility = JavaVersion.VERSION_1_6
@@ -42,7 +43,8 @@ dependencies {
     providedCompile 'javax.servlet:javax.servlet-api:3.0.1'
 
     compile    'com.google.code.gson:gson:2.2.4',
-               'org.apache.poi:poi:3.9'
+               'org.apache.poi:poi:3.9',
+               'javax.servlet:jstl:1.2'
 
      testCompile 'junit:junit:4.11',
                  'org.mockito:mockito-all:1.9.5'

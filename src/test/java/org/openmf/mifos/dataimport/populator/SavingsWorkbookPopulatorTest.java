@@ -59,8 +59,10 @@ public class SavingsWorkbookPopulatorTest {
     		      "\"value\": \"Flat\"},\"annualFeeAmount\": 3.000000,\"annualFeeOnMonthDay\": [9,1],\"accountingRule\": {\"id\": 1,\"code\": \"accountingRuleType.none\",\"value\": \"NONE\"}}]");
 		
 		Boolean onlyLoanOfficers = Boolean.TRUE;
-		SavingsWorkbookPopulator savingsWorkbookPopulator = new SavingsWorkbookPopulator(new OfficeSheetPopulator(restClient),
-				new ClientSheetPopulator(restClient), new GroupSheetPopulator(restClient),new PersonnelSheetPopulator(onlyLoanOfficers, restClient),
+		String officeId = "";
+		String officesContent = null;
+		SavingsWorkbookPopulator savingsWorkbookPopulator = new SavingsWorkbookPopulator(new OfficeSheetPopulator(restClient, officesContent),
+				new ClientSheetPopulator(restClient, officeId), new GroupSheetPopulator(restClient, officeId),new PersonnelSheetPopulator(onlyLoanOfficers, restClient, officeId),
 				new SavingsProductSheetPopulator(restClient));
 		savingsWorkbookPopulator.downloadAndParse();
 		Workbook savingsWorkbook = new HSSFWorkbook();

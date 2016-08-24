@@ -56,8 +56,10 @@ public class SavingsTransactionWorkbookPopulatorTest {
 		Mockito.when(restClient.get("funds")).thenReturn("[{\"id\": 1,\"name\": \"Fund1\"}]");
         Mockito.when(restClient.get("codes/12/codevalues")).thenReturn("[{\"id\": 10,\"name\": \"Cash\",\"position\": 1},{\"id\": 11,\"name\": \"MPesa\",\"position\": 2}]");
 
+        String officesContent = null;
+        String officeId = "";
 		SavingsTransactionWorkbookPopulator savingsTransactionWorkbookPopulator = new SavingsTransactionWorkbookPopulator(restClient,
-				new OfficeSheetPopulator(restClient), new ClientSheetPopulator(restClient), new ExtrasSheetPopulator(restClient));
+				new OfficeSheetPopulator(restClient, officesContent), new ClientSheetPopulator(restClient, officeId), new ExtrasSheetPopulator(restClient));
 	
 		savingsTransactionWorkbookPopulator.downloadAndParse();
     	

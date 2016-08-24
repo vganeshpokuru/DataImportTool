@@ -36,9 +36,12 @@ public class CenterSheetPopulator extends AbstractWorkbookPopulator {
 	private static final int OFFICE_NAME_COL = 0;
 	private static final int CENTER_NAME_COL = 1;
 	private static final int CENTER_ID_COL = 2;
+	
+	private String officeId;
 
-	public CenterSheetPopulator(RestClient restClient) {
+	public CenterSheetPopulator(RestClient restClient, String officeId) {
 		this.restClient = restClient;
+		this.officeId = officeId;
 	}
 
 	@Override
@@ -47,9 +50,9 @@ public class CenterSheetPopulator extends AbstractWorkbookPopulator {
 		try {
 			restClient.createAuthToken();
 			centers = new ArrayList<CompactCenter>();
-			content = restClient.get("centers?paged=true&limit=-1");
+			content = restClient.get("centers?paged=true&limit=-1&officeId=" + officeId);
 			parseCenters();
-			content = restClient.get("offices?limit=-1");
+			content = restClient.get("offices/" + officeId);
 			parseOfficeNames();
 		} catch (Exception e) {
 			result.addError(e.getMessage());
@@ -90,7 +93,12 @@ public class CenterSheetPopulator extends AbstractWorkbookPopulator {
 	
 	private void parseOfficeNames() {
 		JsonElement json = new JsonParser().parse(content);
-		JsonArray array = json.getAsJsonArray();
+        JsonArray array = new JsonArray();
+        if(json.isJsonArray()){
+        	array = json.getAsJsonArray();
+        }else{
+        	array.add(json);
+        }
 		Iterator<JsonElement> iterator = array.iterator();
 		officeNames = new ArrayList<String>();
 		while (iterator.hasNext()) {

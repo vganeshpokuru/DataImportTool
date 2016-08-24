@@ -1,3 +1,5 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page import="java.util.*" %>
 <html>
 <head>
 <title>Data Import Tool</title>
@@ -43,11 +45,21 @@ fieldset {border: 0;margin: 0 0 15px 0;}
 		     <fieldset>Select Client Type : &nbsp;&nbsp;
 		     <input type="radio" name="clientType" value="individual"> Individual &nbsp;&nbsp;
 		     <input type="radio" name="clientType" value="corporate"> Corporate </fieldset>
-		     <input type="submit" value="Download" class="btn" />
-		    </form>
+
+						<fieldset>
+							Select Office : &nbsp;&nbsp; <select name="office" size="1"
+								id="office">
+								<c:forEach items="${offices}" var="office">
+									<option value="${office.id}">${office.name}</option>
+								</c:forEach>
+							</select> &nbsp;&nbsp; <input type="submit" value="Download" class="btn" />
+						</fieldset>
+
+					</form>
 			<form method="post" action="import" enctype="multipart/form-data">
 		            <input type="file" name="file"/>
 		            <input type="submit" class="btn"/>
+
 			</form>
 		</div>
 	</div>
@@ -58,7 +70,15 @@ fieldset {border: 0;margin: 0 0 15px 0;}
 			<p>Download template to help facilitate Centers Import.</p>
 		    <form method="get" action="download" >
 		     <input type="hidden" name="template" value="centers" > 
-		     <input type="submit" value="Download" class="btn"  />
+		     <fieldset>
+							Select Office : &nbsp;&nbsp; <select name="office" size="1"
+								id="office">
+								<c:forEach items="${offices}" var="office">
+									<option value="${office.id}">${office.name}</option>
+								</c:forEach>
+							</select> &nbsp;&nbsp; <input type="submit" value="Download" class="btn" />
+						</fieldset>
+		     
 		    </form>
 			<form method="post" action="import" enctype="multipart/form-data">
 		            <input type="file" name="file"/>
@@ -72,8 +92,16 @@ fieldset {border: 0;margin: 0 0 15px 0;}
 		<div class="stepContent">
 			<p>Download template to help facilitate Groups Import.</p>
 		    <form method="get" action="download" >
-		     <input type="hidden" name="template" value="groups" > 
-		     <input type="submit" value="Download" class="btn"  />
+		     <input type="hidden" name="template" value="groups" >
+		     <fieldset>
+							Select Office : &nbsp;&nbsp; <select name="office" size="1"
+								id="office">
+								<c:forEach items="${offices}" var="office">
+									<option value="${office.id}">${office.name}</option>
+								</c:forEach>
+							</select> &nbsp;&nbsp; <input type="submit" value="Download" class="btn" />
+						</fieldset> 
+		     
 		    </form>
 			<form method="post" action="import" enctype="multipart/form-data">
 		            <input type="file" name="file"/>
@@ -99,7 +127,15 @@ fieldset {border: 0;margin: 0 0 15px 0;}
 		    <p>For quick import of outstanding balances of each loan, use the entire template <b>OR</b> leave the last 3 columns empty and proceed to Step 5 for importing complete repayment history for each loan.</p>
 			<form method="get" action="download" >
 		     <input type="hidden" name="template" value="loan" > 
-		     <input type="submit" value="Download" class="btn"  />
+		     <fieldset>
+							Select Office : &nbsp;&nbsp; <select name="office" size="1"
+								id="office">
+								<c:forEach items="${offices}" var="office">
+									<option value="${office.id}">${office.name}</option>
+								</c:forEach>
+							</select> &nbsp;&nbsp; <input type="submit" value="Download" class="btn" />
+						</fieldset>
+		     
 		    </form>
 		    <form method="post" action="import" enctype="multipart/form-data">
 		            <input type="file" name="file"/>
@@ -113,8 +149,16 @@ fieldset {border: 0;margin: 0 0 15px 0;}
 	    <div class="stepContent">
 	    	<p>Download template to help facilitate import of Loan Repayment History.</p>
 		    <form method="get" action="download" >
-		     <input type="hidden" name="template" value="loanRepaymentHistory" > 
-		     <input type="submit" value="Download" class="btn"  />
+		     <input type="hidden" name="template" value="loanRepaymentHistory" >
+		     <fieldset>
+							Select Office : &nbsp;&nbsp; <select name="office" size="1"
+								id="office">
+								<c:forEach items="${offices}" var="office">
+									<option value="${office.id}">${office.name}</option>
+								</c:forEach>
+							</select> &nbsp;&nbsp; <input type="submit" value="Download" class="btn" />
+						</fieldset> 
+		     
 		    </form>
 		    <form method="post" action="import" enctype="multipart/form-data">
 		            <input type="file" name="file"/>
@@ -137,8 +181,16 @@ fieldset {border: 0;margin: 0 0 15px 0;}
 		    <p>For quick import of current balances of each savings account, enter the current balance as Minimum Required Opening Balance
 		     <b>OR</b> proceed to Step 8 for importing complete transaction history for each savings account.</p>
 			<form method="get" action="download" >
-		     <input type="hidden" name="template" value="savings" > 
-		     <input type="submit" value="Download" class="btn"  />
+		     <input type="hidden" name="template" value="savings" >
+		     <fieldset>
+							Select Office : &nbsp;&nbsp; <select name="office" size="1"
+								id="office">
+								<c:forEach items="${offices}" var="office">
+									<option value="${office.id}">${office.name}</option>
+								</c:forEach>
+							</select> &nbsp;&nbsp; <input type="submit" value="Download" class="btn" />
+						</fieldset> 
+		     
 		    </form>
 		    <form method="post" action="import" enctype="multipart/form-data">
 		            <input type="file" name="file"/>
@@ -152,8 +204,16 @@ fieldset {border: 0;margin: 0 0 15px 0;}
 	    <div class="stepContent">
 		    <p>Download template to help facilitate import of Savings Transaction History.</p>
 		    <form method="get" action="download" >
-		     <input type="hidden" name="template" value="savingsTransactionHistory" > 
-		     <input type="submit" value="Download" class="btn"  />
+		     <input type="hidden" name="template" value="savingsTransactionHistory" >
+		     <fieldset>
+							Select Office : &nbsp;&nbsp; <select name="office" size="1"
+								id="office">
+								<c:forEach items="${offices}" var="office">
+									<option value="${office.id}">${office.name}</option>
+								</c:forEach>
+							</select> &nbsp;&nbsp; <input type="submit" value="Download" class="btn" />
+						</fieldset> 
+		     
 		    </form>
 		    <form method="post" action="import" enctype="multipart/form-data">
 		            <input type="file" name="file"/>
@@ -174,8 +234,16 @@ fieldset {border: 0;margin: 0 0 15px 0;}
 		<div class="stepContent">
 			<p>Download template to help facilitate Fixed Deposit Import. </p>
 		    <form method="get" action="download" >
-		     <input type="hidden" name="template" value="fixedDeposit" > 
-		     <input type="submit" value="Download" class="btn"  />
+		     <input type="hidden" name="template" value="fixedDeposit" >
+		     <fieldset>
+							Select Office : &nbsp;&nbsp; <select name="office" size="1"
+								id="office">
+								<c:forEach items="${offices}" var="office">
+									<option value="${office.id}">${office.name}</option>
+								</c:forEach>
+							</select> &nbsp;&nbsp; <input type="submit" value="Download" class="btn" />
+						</fieldset> 
+		     
 		    </form>
 		    <form method="post" action="import" enctype="multipart/form-data">
 		            <input type="file" name="file"/>
@@ -196,8 +264,16 @@ fieldset {border: 0;margin: 0 0 15px 0;}
 		<div class="stepContent">
 			<p>Download template to help facilitate Recurring Deposit Import. </p>
 		    <form method="get" action="download" >
-		     <input type="hidden" name="template" value="recurringDeposit" > 
-		     <input type="submit" value="Download" class="btn"  />
+		     <input type="hidden" name="template" value="recurringDeposit" >
+		     <fieldset>
+							Select Office : &nbsp;&nbsp; <select name="office" size="1"
+								id="office">
+								<c:forEach items="${offices}" var="office">
+									<option value="${office.id}">${office.name}</option>
+								</c:forEach>
+							</select> &nbsp;&nbsp; <input type="submit" value="Download" class="btn" />
+						</fieldset> 
+		     
 		    </form>
 		    <form method="post" action="import" enctype="multipart/form-data">
 		            <input type="file" name="file"/>
@@ -211,8 +287,16 @@ fieldset {border: 0;margin: 0 0 15px 0;}
 	    <div class="stepContent">
 		    <p>Download template to help facilitate import of Recurring Deposit Account Transaction  History.</p>
 		    <form method="get" action="download" >
-		     <input type="hidden" name="template" value="recurringDepositHistory" > 
-		     <input type="submit" value="Download" class="btn"  />
+		     <input type="hidden" name="template" value="recurringDepositHistory" >
+		     <fieldset>
+							Select Office : &nbsp;&nbsp; <select name="office" size="1"
+								id="office">
+								<c:forEach items="${offices}" var="office">
+									<option value="${office.id}">${office.name}</option>
+								</c:forEach>
+							</select> &nbsp;&nbsp; <input type="submit" value="Download" class="btn" />
+						</fieldset> 
+		     
 		    </form>
 		    <form method="post" action="import" enctype="multipart/form-data">
 		            <input type="file" name="file"/>
@@ -225,8 +309,16 @@ fieldset {border: 0;margin: 0 0 15px 0;}
 	    <div class="stepContent">
 		    <p>Download template to help facilitate import of Closing of savings account.</p>
 		    <form method="get" action="download" >
-		     <input type="hidden" name="template" value="closingOfSavingsAccounts" > 
-		     <input type="submit" value="Download" class="btn"  />
+		     <input type="hidden" name="template" value="closingOfSavingsAccounts" >
+		     <fieldset>
+							Select Office : &nbsp;&nbsp; <select name="office" size="1"
+								id="office">
+								<c:forEach items="${offices}" var="office">
+									<option value="${office.id}">${office.name}</option>
+								</c:forEach>
+							</select> &nbsp;&nbsp; <input type="submit" value="Download" class="btn" />
+						</fieldset> 
+		     
 		    </form>
 		    <form method="post" action="import" enctype="multipart/form-data">
 		            <input type="file" name="file"/>
@@ -239,8 +331,16 @@ fieldset {border: 0;margin: 0 0 15px 0;}
 		<div class="stepContent">
 			<p>Download template to help Add Journal Entries. </p>
 		    <form method="get" action="download" >
-		     <input type="hidden" name="template" value="journalentries" > 
-		     <input type="submit" value="Download" class="btn"  />
+		     <input type="hidden" name="template" value="journalentries" >
+		     <fieldset>
+							Select Office : &nbsp;&nbsp; <select name="office" size="1"
+								id="office">
+								<c:forEach items="${offices}" var="office">
+									<option value="${office.id}">${office.name}</option>
+								</c:forEach>
+							</select> &nbsp;&nbsp; <input type="submit" value="Download" class="btn" />
+						</fieldset> 
+		     
 		    </form>
 		    <form method="post" action="import" enctype="multipart/form-data">
 		            <input type="file" name="file"/>
@@ -253,8 +353,16 @@ fieldset {border: 0;margin: 0 0 15px 0;}
 		<div class="stepContent">
 			<p>Download template to help Add Guarantor. </p>
 		    <form method="get" action="download" >
-		     <input type="hidden" name="template" value="guarantor" > 
-		     <input type="submit" value="Download" class="btn"  />
+		     <input type="hidden" name="template" value="guarantor" >
+		     <fieldset>
+							Select Office : &nbsp;&nbsp; <select name="office" size="1"
+								id="office">
+								<c:forEach items="${offices}" var="office">
+									<option value="${office.id}">${office.name}</option>
+								</c:forEach>
+							</select> &nbsp;&nbsp; <input type="submit" value="Download" class="btn" />
+						</fieldset> 
+		     
 		    </form>
 		    <form method="post" action="import" enctype="multipart/form-data">
 		            <input type="file" name="file"/>

@@ -37,8 +37,11 @@ public class GroupSheetPopulator extends AbstractWorkbookPopulator {
     private static final int GROUP_NAME_COL = 1;
     private static final int GROUP_ID_COL = 2;
     
-    public GroupSheetPopulator(RestClient restClient) {
+    private String officeId;
+    
+    public GroupSheetPopulator(RestClient restClient, String officeId) {
     	this.restClient = restClient;
+    	this.officeId = officeId;
     }
     
     @Override
@@ -47,9 +50,9 @@ public class GroupSheetPopulator extends AbstractWorkbookPopulator {
     	try {
         	restClient.createAuthToken();
         	groups = new ArrayList<CompactGroup>();
-            content = restClient.get("groups?paged=true&limit=-1");
+            content = restClient.get("groups?paged=true&limit=-1&officeId="+officeId);
             parseGroups();
-            content = restClient.get("offices?limit=-1");
+            content = restClient.get("offices/" + officeId);
             parseOfficeNames();
         } catch (Exception e) {
             result.addError(e.getMessage());
@@ -92,7 +95,12 @@ public class GroupSheetPopulator extends AbstractWorkbookPopulator {
     
     private void parseOfficeNames() {
     	JsonElement json = new JsonParser().parse(content);
-    	JsonArray array = json.getAsJsonArray();
+    	JsonArray array = new JsonArray();
+    	if(json.isJsonArray()){
+        	array = json.getAsJsonArray();
+        }else{
+        	array.add(json);
+        }
         Iterator<JsonElement> iterator = array.iterator();
         officeNames = new ArrayList<String>();
         while(iterator.hasNext()) {

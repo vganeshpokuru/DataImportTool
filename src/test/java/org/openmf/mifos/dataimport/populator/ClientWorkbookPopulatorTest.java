@@ -37,10 +37,12 @@ public class ClientWorkbookPopulatorTest {
         		" \"Dzeko, Edin\",\"officeId\": 2,\"officeName\": \"Office1\",\"isLoanOfficer\": true}]");
     	
     	Boolean onlyLoanOfficers = Boolean.FALSE;
+    	String officeId = "";
+    	String officesContent = null;
     	ClientWorkbookPopulator individualClientWorkbookPopulator = new ClientWorkbookPopulator("individual",
-    			new OfficeSheetPopulator(restClient), new PersonnelSheetPopulator(onlyLoanOfficers, restClient));
+    			new OfficeSheetPopulator(restClient, officesContent), new PersonnelSheetPopulator(onlyLoanOfficers, restClient, officeId));
     	ClientWorkbookPopulator corporateClientWorkbookPopulator = new ClientWorkbookPopulator("corporate",
-    			new OfficeSheetPopulator(restClient), new PersonnelSheetPopulator(onlyLoanOfficers, restClient));
+    			new OfficeSheetPopulator(restClient, officesContent), new PersonnelSheetPopulator(onlyLoanOfficers, restClient, officeId));
     	individualClientWorkbookPopulator.downloadAndParse();
     	corporateClientWorkbookPopulator.downloadAndParse();
     	

@@ -45,6 +45,7 @@ public class LoanRepaymentWorkbookPopulator extends AbstractWorkbookPopulator {
 	private ClientSheetPopulator clientSheetPopulator;
 	private ExtrasSheetPopulator extrasSheetPopulator;
 	private List<CompactLoan> loans;
+	private String officeId;
 	
 	private static final int OFFICE_NAME_COL = 0;
     private static final int CLIENT_NAME_COL = 1;
@@ -66,12 +67,13 @@ public class LoanRepaymentWorkbookPopulator extends AbstractWorkbookPopulator {
     private static final int LOOKUP_LOAN_DISBURSEMENT_DATE_COL = 18;
 	
 	public LoanRepaymentWorkbookPopulator(RestClient restClient, OfficeSheetPopulator officeSheetPopulator,
-			ClientSheetPopulator clientSheetPopulator, ExtrasSheetPopulator extrasSheetPopulator) {
+			ClientSheetPopulator clientSheetPopulator, ExtrasSheetPopulator extrasSheetPopulator, String officeId) {
         this.restClient = restClient;
         this.officeSheetPopulator = officeSheetPopulator;
         this.clientSheetPopulator = clientSheetPopulator;
         this.extrasSheetPopulator = extrasSheetPopulator;
 		loans = new ArrayList<CompactLoan>();
+		this.officeId = officeId;
     }
 	
 	@Override
@@ -107,7 +109,7 @@ public class LoanRepaymentWorkbookPopulator extends AbstractWorkbookPopulator {
     	Result result = new Result();
     	try {
         	restClient.createAuthToken();
-            content = restClient.get("loans?limit=-1");
+            content = restClient.get("loans?limit=-1&officeId" + officeId +"&lookup=true");
             Gson gson = new Gson();
             JsonParser parser = new JsonParser();
             JsonObject obj = parser.parse(content).getAsJsonObject();

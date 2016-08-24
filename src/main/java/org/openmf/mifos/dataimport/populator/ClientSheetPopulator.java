@@ -36,9 +36,12 @@ public class ClientSheetPopulator extends AbstractWorkbookPopulator {
     private static final int OFFICE_NAME_COL = 0;
     private static final int CLIENT_NAME_COL = 1;
     private static final int CLIENT_ID_COL = 2;
+    
+    private String officeId;
 	
-	public ClientSheetPopulator(RestClient restClient) {
+	public ClientSheetPopulator(RestClient restClient, String officeId) {
     	this.restClient = restClient;
+    	this.officeId = officeId;
     }
 	
 	@Override
@@ -47,9 +50,9 @@ public class ClientSheetPopulator extends AbstractWorkbookPopulator {
     	try {
         	restClient.createAuthToken();
         	clients = new ArrayList<CompactClient>();
-            content = restClient.get("clients?limit=-1");
+            content = restClient.get("clients?limit=-1&officeId=" + officeId);
             parseClients();
-            content = restClient.get("offices?limit=-1");
+            content = restClient.get("offices/" + officeId);
             parseOfficeNames();
         } catch (Exception e) {
             result.addError(e.getMessage());
@@ -93,7 +96,12 @@ public class ClientSheetPopulator extends AbstractWorkbookPopulator {
     
     private void parseOfficeNames() {
     	JsonElement json = new JsonParser().parse(content);
-    	JsonArray array = json.getAsJsonArray();
+    	JsonArray array = new JsonArray();
+        if(json.isJsonArray()){
+        	array = json.getAsJsonArray();
+        }else{
+        	array.add(json);
+        }
         Iterator<JsonElement> iterator = array.iterator();
         officeNames = new ArrayList<String>();
         while(iterator.hasNext()) {
@@ -101,6 +109,7 @@ public class ClientSheetPopulator extends AbstractWorkbookPopulator {
         	officeName = officeName.substring(1, officeName.length()-1).trim().replaceAll("[ )(]", "_");
          officeNames.add(officeName);
         }
+        
     }
     
     private void populateClientsByOfficeName(Sheet clientSheet) {

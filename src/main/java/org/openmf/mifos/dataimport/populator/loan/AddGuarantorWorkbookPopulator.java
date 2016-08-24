@@ -1,6 +1,6 @@
 package org.openmf.mifos.dataimport.populator.loan;
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,6 +25,7 @@ import org.openmf.mifos.dataimport.handler.Result;
 import org.openmf.mifos.dataimport.http.RestClient;
 import org.openmf.mifos.dataimport.populator.AbstractWorkbookPopulator;
 import org.openmf.mifos.dataimport.populator.ClientSheetPopulator;
+import org.openmf.mifos.dataimport.populator.CodeValueSheetPopulator;
 import org.openmf.mifos.dataimport.populator.OfficeSheetPopulator;
 
 import com.google.gson.Gson;
@@ -43,9 +44,10 @@ public class AddGuarantorWorkbookPopulator extends AbstractWorkbookPopulator {
 		
 		private OfficeSheetPopulator officeSheetPopulator;
 		private ClientSheetPopulator clientSheetPopulator;
+		private CodeValueSheetPopulator codeValueSheetPopulator;
 		private List<CompactLoan> loans;
 		private List<CompactSavingsAccount> savings;
-		
+		private String officeId;
 		
 		private static final int OFFICE_NAME_COL = 0;
 	    private static final int CLIENT_NAME_COL = 1;
@@ -67,24 +69,23 @@ public class AddGuarantorWorkbookPopulator extends AbstractWorkbookPopulator {
 	    private static final int LOOKUP_ACCOUNT_NO_COL=82;
 	    private static final int LOOKUP_SAVINGS_CLIENT_NAME_COL=83;
 	    private static final int LOOKUP_SAVINGS_ACCOUNT_NO_COL=84;
-	    
-	    
+
 	    
 	    public AddGuarantorWorkbookPopulator(RestClient restClient, OfficeSheetPopulator officeSheetPopulator,
-				ClientSheetPopulator clientSheetPopulator) {
+				ClientSheetPopulator clientSheetPopulator, CodeValueSheetPopulator codeValueSheetPopulator, String officeId) {
 	    	this.restClient = restClient;
 	        this.officeSheetPopulator = officeSheetPopulator;
 	        this.clientSheetPopulator = clientSheetPopulator;
+	        this.codeValueSheetPopulator = codeValueSheetPopulator;
 	        loans = new ArrayList<CompactLoan>();
 	        savings = new ArrayList<CompactSavingsAccount>();
-	       
-			
+	        this.officeId = officeId;
 		}
 
 	@Override
     public Result downloadAndParse() {
 		Result result =  officeSheetPopulator.downloadAndParse();
-				if(result.isSuccess()){
+		if(result.isSuccess()){
 			result = clientSheetPopulator.downloadAndParse();
 		}
 		if(result.isSuccess()) {
@@ -92,6 +93,10 @@ public class AddGuarantorWorkbookPopulator extends AbstractWorkbookPopulator {
 		}
 		if(result.isSuccess()){
 			result = parseLoans();
+		}
+		if(result.isSuccess()){
+			result = codeValueSheetPopulator.downloadAndParse();
+//			parseGuarantorRelationShips();
 		}
 		return result;
 	}
@@ -101,7 +106,7 @@ public class AddGuarantorWorkbookPopulator extends AbstractWorkbookPopulator {
 		Result result=new Result();
 		try {
         	restClient.createAuthToken();
-            content = restClient.get("savingsaccounts?limit=-1");
+            content = restClient.get("savingsaccounts?limit=-1&officeId" + officeId);
             Gson gson = new Gson();
             JsonParser parser = new JsonParser();
             JsonObject obj = parser.parse(content).getAsJsonObject();
@@ -118,13 +123,13 @@ public class AddGuarantorWorkbookPopulator extends AbstractWorkbookPopulator {
 	          
 	       }
 	return result;
-	}	
+	}
 	
 	private Result parseLoans() {
     	Result result = new Result();
     	try {
         	restClient.createAuthToken();
-            content = restClient.get("loans?limit=-1");
+            content = restClient.get("loans?limit=-1&officeId" + officeId +"&lookup=true");
             Gson gson = new Gson();
             JsonParser parser = new JsonParser();
             JsonObject obj = parser.parse(content).getAsJsonObject();
@@ -157,6 +162,9 @@ public class AddGuarantorWorkbookPopulator extends AbstractWorkbookPopulator {
 	    	}
 	    	if(result.isSuccess()) {
 	    		result = populateLoansTable(addGuarantorSheet);  
+	    	}
+	    	if(result.isSuccess()){
+	    		result = codeValueSheetPopulator.populate(workbook);
 	    	}
 	        if(result.isSuccess()) {
 	            result = setRules(addGuarantorSheet);
@@ -193,8 +201,6 @@ public class AddGuarantorWorkbookPopulator extends AbstractWorkbookPopulator {
 	    }
     	return result;
     }
-    
-	
 
 	/*private Result setDefaults(Sheet worksheet) {
 		Result result = new Result();
@@ -218,6 +224,7 @@ public class AddGuarantorWorkbookPopulator extends AbstractWorkbookPopulator {
         	CellRangeAddressList accountNumberRange = new  CellRangeAddressList(1, SpreadsheetVersion.EXCEL97.getLastRowIndex(), LOAN_ACCOUNT_NO_COL, LOAN_ACCOUNT_NO_COL);
         	CellRangeAddressList savingsaccountNumberRange = new  CellRangeAddressList(1, SpreadsheetVersion.EXCEL97.getLastRowIndex(), SAVINGS_ID_COL, SAVINGS_ID_COL);
         	CellRangeAddressList guranterTypeRange = new  CellRangeAddressList(1, SpreadsheetVersion.EXCEL97.getLastRowIndex(), GUARANTO_TYPE_COL, GUARANTO_TYPE_COL);
+        	CellRangeAddressList guarantorRelationshipNameRange = new  CellRangeAddressList(1, SpreadsheetVersion.EXCEL97.getLastRowIndex(), CLIENT_RELATIONSHIP_TYPE_COL, CLIENT_RELATIONSHIP_TYPE_COL);
         	
         	DataValidationHelper validationHelper = new HSSFDataValidationHelper((HSSFSheet)worksheet);
         	
@@ -230,6 +237,7 @@ public class AddGuarantorWorkbookPopulator extends AbstractWorkbookPopulator {
         	DataValidationConstraint guranterTypeConstraint = validationHelper.createExplicitListConstraint(new String[] {"Internal","External"});
         	DataValidationConstraint entityofficeNameConstraint = validationHelper.createFormulaListConstraint("Office");
         	DataValidationConstraint entityclientNameConstraint = validationHelper.createFormulaListConstraint("INDIRECT(CONCATENATE(\"Client_\",$F1))");
+        	DataValidationConstraint guarantorRelationshipNameConstraint = validationHelper.createFormulaListConstraint("Guarantor_Relationships_For_Clients");
     	
         	DataValidation officeValidation = validationHelper.createValidation(officeNameConstraint, officeNameRange);
         	DataValidation clientValidation = validationHelper.createValidation(clientNameConstraint, clientNameRange);
@@ -240,6 +248,7 @@ public class AddGuarantorWorkbookPopulator extends AbstractWorkbookPopulator {
         	DataValidation guranterTypeValidation = validationHelper.createValidation(guranterTypeConstraint, guranterTypeRange);
         	DataValidation entityofficeValidation = validationHelper.createValidation(entityofficeNameConstraint, entityofficeNameRange);
         	DataValidation entityclientValidation = validationHelper.createValidation(entityclientNameConstraint, entityclientNameRange);
+        	DataValidation guarantorRelationshipValidation = validationHelper.createValidation(guarantorRelationshipNameConstraint, guarantorRelationshipNameRange);
     	
         	
         	worksheet.addValidationData(officeValidation);
@@ -249,6 +258,7 @@ public class AddGuarantorWorkbookPopulator extends AbstractWorkbookPopulator {
             worksheet.addValidationData(entityofficeValidation);
             worksheet.addValidationData(entityclientValidation);
             worksheet.addValidationData(savingsaccountNumberValidation);
+            worksheet.addValidationData(guarantorRelationshipValidation);
     	
     	
     	} catch (RuntimeException re) {
@@ -335,6 +345,12 @@ public class AddGuarantorWorkbookPopulator extends AbstractWorkbookPopulator {
     		name.setNameName("Account_" + clientsWithActiveLoans.get(j).replaceAll(" ", "_") + "_" + clientIdsWithActiveLoans.get(j) + "_");
     		name.setRefersToFormula("guarantor!$CE$" + clientNameToBeginEndIndexes.get(clientsWithActiveLoans.get(j))[0] + ":$CE$" + clientNameToBeginEndIndexes.get(clientsWithActiveLoans.get(j))[1]);
     	}
+    	
+		// GUARANTOR relationships Named after Clients
+		Name guarantorRelationshipName = addGurarantorWorkbook.createName();
+		guarantorRelationshipName.setNameName("Guarantor_Relationships_For_Clients");
+		guarantorRelationshipName.setRefersToFormula("CodeValues!$A$2:$A$" + (codeValueSheetPopulator.getCodeValues().size() + 1));
+    	
     	///savings
     	//Counting clients with active savings and starting and end addresses of cells for naming
     	ArrayList<String> clientsWithActiveSavings = new ArrayList<String>();
@@ -397,7 +413,7 @@ public class AddGuarantorWorkbookPopulator extends AbstractWorkbookPopulator {
 	        writeString(ENTITY_OFFICE_NAME_COL, rowHeader, "Guranter office");
 	        writeString(ENTITY_ID_COL, rowHeader, "Gurantor client id*");
 	        writeString(FIRST_NAME_COL, rowHeader, "First Name*");
-	        writeString(LAST_NAME_COL, rowHeader, "Last Name");
+	        writeString(LAST_NAME_COL, rowHeader, "Last Name*");
 	        writeString(ADDRESS_LINE_1_COL, rowHeader, "ADDRESS LINE 1");
 	        writeString(ADDRESS_LINE_2_COL, rowHeader, "ADDRESS LINE 2");
 	        writeString(CITY_COL, rowHeader, "City");
@@ -409,7 +425,6 @@ public class AddGuarantorWorkbookPopulator extends AbstractWorkbookPopulator {
 	        writeString(LOOKUP_ACCOUNT_NO_COL, rowHeader, "Lookup Account");
 	        writeString(LOOKUP_SAVINGS_CLIENT_NAME_COL, rowHeader, "Savings Lookup Client");
 	        writeString(LOOKUP_SAVINGS_ACCOUNT_NO_COL, rowHeader, "savings Lookup Account");
-	        
 		
 	}
 

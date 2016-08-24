@@ -40,7 +40,8 @@ public class ClientSheetPopulatorTest {
         		"\"openingDate\":[2009,1,1],\"hierarchy\": \".\"},{\"id\": 2,\"name\": \"Office1\",\"nameDecorated\": \"....Office1\",\"openingDate\":[2013,4,1]," +
         		"\"hierarchy\": \".2.\",\"parentId\": 1,\"parentName\": \"Head Office\"}]");
 
-    	populator = new ClientSheetPopulator(restClient);
+        String officeId = "";
+    	populator = new ClientSheetPopulator(restClient, officeId);
     	Result result = populator.downloadAndParse();
     	
     	Assert.assertTrue(result.isSuccess());
@@ -76,7 +77,8 @@ public class ClientSheetPopulatorTest {
          		"\"openingDate\":[2009,1,1],\"hierarchy\": \".\"},{\"id\": 2,\"name\": \"Office1\",\"nameDecorated\": \"....Office1\",\"openingDate\":[2013,4,1]," +
          		"\"hierarchy\": \".2.\",\"parentId\": 1,\"parentName\": \"Head Office\"}]");
 
-        populator = new ClientSheetPopulator(restClient);
+        String officeId = "";
+        populator = new ClientSheetPopulator(restClient, officeId);
      	populator.downloadAndParse();
     	Workbook book = new HSSFWorkbook();
     	Result result = populator.populate(book);

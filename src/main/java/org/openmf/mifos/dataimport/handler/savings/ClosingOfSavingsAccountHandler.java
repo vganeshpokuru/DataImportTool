@@ -14,6 +14,8 @@ import org.openmf.mifos.dataimport.handler.Result;
 import org.openmf.mifos.dataimport.http.RestClient;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class ClosingOfSavingsAccountHandler  extends AbstractDataImportHandler{
 	  
@@ -67,7 +69,9 @@ private ClosingOfSavingsAccounts paseAsSavingsClosed(Row row) {
      String onAccountClosure = readAsLong(ON_ACCOUNT_CLOSURE_ID,row);
      String toSavingsAccountId = readAsLong(TO_SAVINGS_ACCOUNT_ID, row);
      String accountType = readAsString(ACCOUNT_TYPE_COL, row);
-     return new ClosingOfSavingsAccounts(Integer.parseInt(savingsAccountId),accountType,closedOnDate,onAccountClosure,toSavingsAccountId,  row.getRowNum());	
+		return new ClosingOfSavingsAccounts(Integer.parseInt(savingsAccountId),
+				closedOnDate, onAccountClosure, toSavingsAccountId,
+				accountType, row.getRowNum());	
 	}
 
 @Override
@@ -79,7 +83,17 @@ public Result upload() {
         try {
             Gson gson = new Gson();
             String payload = gson.toJson(transaction);
-            restClient.post(transaction.getAccountType() +"/"+transaction.getAccountId()+ "?command=close", payload);
+            
+            JsonParser parser = new JsonParser();
+            JsonObject payloadObj = parser.parse(payload).getAsJsonObject();
+				if (!transaction.getAccountType().equalsIgnoreCase("recurringdepositaccounts") && payloadObj.has("onAccountClosureId"))
+					payloadObj.remove("onAccountClosureId");
+				if (payloadObj.has("toSavingsAccountId"))
+					payloadObj.remove("toSavingsAccountId");
+				if (payloadObj.has("accountType"))
+					payloadObj.remove("accountType");
+            
+            restClient.post(transaction.getAccountType() +"/"+transaction.getAccountId()+ "?command=close", payloadObj.toString());
             
             Cell statusCell = savingsTransactionSheet.getRow(transaction.getRowIndex()).createCell(STATUS_COL);
             statusCell.setCellValue("Imported");

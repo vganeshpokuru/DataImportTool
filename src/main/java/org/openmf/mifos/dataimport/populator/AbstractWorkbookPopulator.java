@@ -18,7 +18,7 @@ import org.openmf.mifos.dataimport.dto.client.CompactGroup;
 
 public abstract class AbstractWorkbookPopulator implements WorkbookPopulator {
 
-	    protected void writeInt(int colIndex, Row row, int value) {
+		protected void writeInt(int colIndex, Row row, int value) {
 	            row.createCell(colIndex).setCellValue(value);
 	    }
 	    

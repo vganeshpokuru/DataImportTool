@@ -21,7 +21,7 @@ import org.openmf.mifos.dataimport.handler.ImportHandlerFactory;
 import org.openmf.mifos.dataimport.handler.Result;
 
 @WebServlet(name = "DataImportServlet", urlPatterns = {"/import"})
-@MultipartConfig(maxFileSize=10000000, fileSizeThreshold=10000000)
+@MultipartConfig(maxFileSize=100000000, fileSizeThreshold=100000000)
 public class DataImportServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;

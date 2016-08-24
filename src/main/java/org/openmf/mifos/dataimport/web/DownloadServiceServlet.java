@@ -1,8 +1,9 @@
 package org.openmf.mifos.dataimport.web;
 
-import java.io.IOException;
+import java.io.IOException; 
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,11 +13,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.openmf.mifos.dataimport.dto.Office;
 import org.openmf.mifos.dataimport.handler.Result;
 import org.openmf.mifos.dataimport.populator.WorkbookPopulator;
 import org.openmf.mifos.dataimport.populator.WorkbookPopulatorFactory;
 
-@WebServlet(name = "DownloadServiceServlet", urlPatterns = {"/download"})
+import com.google.gson.Gson;
+
+@WebServlet(name = "DownloadServiceServlet", urlPatterns = {"/download"}, loadOnStartup=1)
 public class DownloadServiceServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 2L;
@@ -27,9 +31,10 @@ public class DownloadServiceServlet extends HttpServlet {
 		String fileName = request.getParameter("template");
 		try{
 			String parameter = null;
+			String officeId = request.getParameter("office");
 			if(request.getParameter("template").equals("client"))
 			    parameter = request.getParameter("clientType");
-			WorkbookPopulator populator = WorkbookPopulatorFactory.createWorkbookPopulator(parameter, fileName);
+			WorkbookPopulator populator = WorkbookPopulatorFactory.createWorkbookPopulator(parameter, fileName, officeId, getSelectedOfficeContent(officeId));
 			Workbook workbook = new HSSFWorkbook();
 	        Result result = downloadAndPopulate(workbook, populator);
 			fileName=fileName+".xls";
@@ -66,5 +71,16 @@ public class DownloadServiceServlet extends HttpServlet {
 			 out.close();
 		 }
 	  }
-
+	 
+	 private String getSelectedOfficeContent(String officeId){
+		 List<Office> offices = (List<Office>)getServletContext().getAttribute("offices");
+		 Office officesContent = null;
+		 for (Office office : offices) {
+			if(office.getId() == Integer.parseInt(officeId)){
+				officesContent = office;
+				break;
+			}
+		}
+		return new Gson().toJson(officesContent);
+	 }
 }

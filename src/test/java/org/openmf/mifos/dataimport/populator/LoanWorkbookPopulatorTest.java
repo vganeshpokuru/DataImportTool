@@ -65,8 +65,10 @@ public class LoanWorkbookPopulatorTest {
         Mockito.when(restClient.get("codes/12/codevalues")).thenReturn("[{\"id\": 10,\"name\": \"Cash\",\"position\": 1},{\"id\": 11,\"name\": \"MPesa\",\"position\": 2}]");
 	    
         Boolean onlyLoanOfficers = Boolean.TRUE;
-        LoanWorkbookPopulator loanWorkbookPopulator = new LoanWorkbookPopulator(new OfficeSheetPopulator(restClient),
-        		new ClientSheetPopulator(restClient), new GroupSheetPopulator(restClient), new PersonnelSheetPopulator(onlyLoanOfficers, restClient),
+        String officeId = "";
+        String officesContent = null;
+        LoanWorkbookPopulator loanWorkbookPopulator = new LoanWorkbookPopulator(new OfficeSheetPopulator(restClient, officesContent),
+        		new ClientSheetPopulator(restClient, officeId), new GroupSheetPopulator(restClient, officeId), new PersonnelSheetPopulator(onlyLoanOfficers, restClient, officeId),
    			 new LoanProductSheetPopulator(restClient), new ExtrasSheetPopulator(restClient));
         loanWorkbookPopulator.downloadAndParse();
         Workbook loanWorkbook = new HSSFWorkbook();

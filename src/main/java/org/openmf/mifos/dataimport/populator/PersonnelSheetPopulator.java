@@ -36,13 +36,16 @@ public class PersonnelSheetPopulator extends AbstractWorkbookPopulator {
 	private Map<Integer, Integer[]> officeNameToBeginEndIndexesOfStaff;
 	private Map<Integer,String> officeIdToOfficeName;
 	
+	private String officeId;
+	
 	private static final int OFFICE_NAME_COL = 0;
 	private static final int STAFF_NAME_COL = 1;
 	private static final int STAFF_ID_COL = 2;
 	
-	public PersonnelSheetPopulator(Boolean onlyLoanOfficers, RestClient client) {
+	public PersonnelSheetPopulator(Boolean onlyLoanOfficers, RestClient client, String officeId) {
 		this.onlyLoanOfficers = onlyLoanOfficers;
         this.client = client;
+        this.officeId = officeId;
     }
 	
 	 @Override
@@ -51,9 +54,9 @@ public class PersonnelSheetPopulator extends AbstractWorkbookPopulator {
 	        try {
 	        	client.createAuthToken();
 	        	personnel = new ArrayList<Personnel>();
-	            content = client.get("staff?limit=-1");
+	        	content = client.get("staff?limit=-1&officeId=" + officeId);
 	            parseStaff();
-	            content = client.get("offices?limit=-1");
+	            content = client.get("offices/" + officeId);
 	            parseOffices();
 	        } catch (RuntimeException re) {
 	            result.addError(re.getMessage());
@@ -98,7 +101,12 @@ public class PersonnelSheetPopulator extends AbstractWorkbookPopulator {
 	    private void parseOffices() {
 	    	offices = new ArrayList<Office>();
             JsonElement json = new JsonParser().parse(content);
-            JsonArray array = json.getAsJsonArray();
+            JsonArray array = new JsonArray();
+            if(json.isJsonArray()){
+            	array = json.getAsJsonArray();
+            }else{
+            	array.add(json);
+            }
             Iterator<JsonElement> iterator = array.iterator();
             officeIdToOfficeName = new HashMap<Integer,String>();
             while(iterator.hasNext()) {
@@ -108,8 +116,8 @@ public class PersonnelSheetPopulator extends AbstractWorkbookPopulator {
             	offices.add(office);
             }
 	    }
-	    
 	    private void populateStaffByOfficeName(Sheet staffSheet) {
+	    
 	    	int rowIndex = 1, startIndex = 1, officeIndex = 0;
 	    	officeNameToBeginEndIndexesOfStaff = new HashMap<Integer, Integer[]>();
 	    	Row row = staffSheet.createRow(rowIndex);
@@ -156,10 +164,12 @@ public class PersonnelSheetPopulator extends AbstractWorkbookPopulator {
 	    	Integer hierarchyLength = hierarchy.length();
 			String[] officeIds = hierarchy.substring(1, hierarchyLength).split("\\.");
 			String headOffice = offices.get(0).getName().trim().replaceAll("[ )(]", "_");
-			if(officeToPersonnel.containsKey(headOffice))
-			    fullStaffList.addAll(officeToPersonnel.get(headOffice));
-			if(officeIds[0].isEmpty())
+			/*if(officeToPersonnel.containsKey(headOffice))
+			    fullStaffList.addAll(officeToPersonnel.get(headOffice));*/
+			if(officeIds[0].isEmpty()){
+				fullStaffList.addAll(officeToPersonnel.get(headOffice));
 				return fullStaffList;
+			}
 			for(int i=0; i<officeIds.length; i++) {
 				String officeName = getOfficeNameFromOfficeId(Integer.parseInt(officeIds[i]));
 				if(officeToPersonnel.containsKey(officeName))

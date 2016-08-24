@@ -30,8 +30,9 @@ public class OfficeSheetPopulator extends AbstractWorkbookPopulator {
 	private static final int ID_COL = 0;
 	private static final int OFFICE_NAME_COL = 1;
 
-    public OfficeSheetPopulator(RestClient client) {
+    public OfficeSheetPopulator(RestClient client, String officesContent) {
         this.client = client;
+        this.content = officesContent;
     }
     
     @Override
@@ -41,7 +42,7 @@ public class OfficeSheetPopulator extends AbstractWorkbookPopulator {
         	client.createAuthToken();
         	offices = new ArrayList<Office>();
         	officeNames = new ArrayList<String>();
-            content = client.get("offices?limit=-1");
+//            content = client.get("offices?limit=-1");
             parseOffices();
         } catch (Exception e) {
             result.addError(e.getMessage());
@@ -81,7 +82,12 @@ public class OfficeSheetPopulator extends AbstractWorkbookPopulator {
     private void parseOffices() {
     	Gson gson = new Gson();
         JsonElement json = new JsonParser().parse(content);
-        JsonArray array = json.getAsJsonArray();
+        JsonArray array = new JsonArray();
+        if(json.isJsonArray()){
+        	array = json.getAsJsonArray();
+        }else{
+        	array.add(json);
+        }
         Iterator<JsonElement> iterator = array.iterator();
         while(iterator.hasNext()) {
         	json = iterator.next();

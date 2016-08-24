@@ -24,41 +24,41 @@ import org.openmf.mifos.dataimport.populator.savings.SavingsWorkbookPopulator;
 public class WorkbookPopulatorFactory {
 	
 	
-	  public static final WorkbookPopulator createWorkbookPopulator(String parameter, String template) throws IOException {
+	  public static final WorkbookPopulator createWorkbookPopulator(String parameter, String template, String officeId, String officesContent) throws IOException {
             MifosRestClient restClient = new MifosRestClient();  
 		  
 	        if(template.trim().equals("client")) 
-	             return new ClientWorkbookPopulator (parameter, new OfficeSheetPopulator(restClient), new PersonnelSheetPopulator(Boolean.FALSE, restClient));
+	             return new ClientWorkbookPopulator (parameter, new OfficeSheetPopulator(restClient, officesContent), new PersonnelSheetPopulator(Boolean.FALSE, restClient, officeId));
 	        else if(template.trim().equals("groups"))
-	        	 return new GroupWorkbookPopulator(new OfficeSheetPopulator(restClient), new PersonnelSheetPopulator(Boolean.FALSE, restClient), new CenterSheetPopulator(restClient),
-	        			 new ClientSheetPopulator(restClient));
+	        	 return new GroupWorkbookPopulator(new OfficeSheetPopulator(restClient, officesContent), new PersonnelSheetPopulator(Boolean.FALSE, restClient, officeId), new CenterSheetPopulator(restClient, officeId),
+	        			 new ClientSheetPopulator(restClient, officeId));
 	        else if(template.trim().equals("centers"))
-	        	 return new CenterWorkbookPopulator(new OfficeSheetPopulator(restClient), new PersonnelSheetPopulator(Boolean.FALSE, restClient));
+	        	 return new CenterWorkbookPopulator(new OfficeSheetPopulator(restClient, officesContent), new PersonnelSheetPopulator(Boolean.FALSE, restClient, officeId));
 	        else if(template.trim().equals("loan"))
-	        	 return new LoanWorkbookPopulator(new OfficeSheetPopulator(restClient), new ClientSheetPopulator(restClient), new GroupSheetPopulator(restClient),
-	        			 new PersonnelSheetPopulator(Boolean.TRUE, restClient), new LoanProductSheetPopulator(restClient), new ExtrasSheetPopulator(restClient));
+	        	 return new LoanWorkbookPopulator(new OfficeSheetPopulator(restClient, officesContent), new ClientSheetPopulator(restClient, officeId), new GroupSheetPopulator(restClient, officeId),
+	        			 new PersonnelSheetPopulator(Boolean.TRUE, restClient, officeId), new LoanProductSheetPopulator(restClient), new ExtrasSheetPopulator(restClient));
 	        else if(template.trim().equals("loanRepaymentHistory"))
-	        	 return new LoanRepaymentWorkbookPopulator(restClient, new OfficeSheetPopulator(restClient), new ClientSheetPopulator(restClient), new ExtrasSheetPopulator(restClient));
+	        	 return new LoanRepaymentWorkbookPopulator(restClient, new OfficeSheetPopulator(restClient, officesContent), new ClientSheetPopulator(restClient, officeId), new ExtrasSheetPopulator(restClient), officeId);
 	        else if(template.trim().equals("savings"))
-	        	 return new SavingsWorkbookPopulator(new OfficeSheetPopulator(restClient), new ClientSheetPopulator(restClient), new GroupSheetPopulator(restClient),
-	        			 new PersonnelSheetPopulator(Boolean.TRUE, restClient), new SavingsProductSheetPopulator(restClient));
+	        	 return new SavingsWorkbookPopulator(new OfficeSheetPopulator(restClient, officesContent), new ClientSheetPopulator(restClient, officeId), new GroupSheetPopulator(restClient, officeId),
+	        			 new PersonnelSheetPopulator(Boolean.TRUE, restClient, officeId), new SavingsProductSheetPopulator(restClient));
 	        else if(template.trim().equals("savingsTransactionHistory"))
-	        	 return new SavingsTransactionWorkbookPopulator(restClient, new OfficeSheetPopulator(restClient), new ClientSheetPopulator(restClient), new ExtrasSheetPopulator(restClient));
+	        	 return new SavingsTransactionWorkbookPopulator(restClient, new OfficeSheetPopulator(restClient, officesContent), new ClientSheetPopulator(restClient, officeId), new ExtrasSheetPopulator(restClient));
 	        else if(template.trim().equals("fixedDeposit"))
-	        	 return new FixedDepositWorkbookPopulator(new OfficeSheetPopulator(restClient), new ClientSheetPopulator(restClient),
-	        			 new PersonnelSheetPopulator(Boolean.TRUE, restClient), new FixedDepositProductSheetPopulator(restClient));
+	        	 return new FixedDepositWorkbookPopulator(new OfficeSheetPopulator(restClient, officesContent), new ClientSheetPopulator(restClient, officeId),
+	        			 new PersonnelSheetPopulator(Boolean.TRUE, restClient,officeId), new FixedDepositProductSheetPopulator(restClient));
 	        else if(template.trim().equals("recurringDeposit"))
-	        	return new RecurringDepositWorkbookPopulator(new OfficeSheetPopulator(restClient), new ClientSheetPopulator(restClient),
-	        			 new PersonnelSheetPopulator(Boolean.TRUE, restClient), new RecurringDepositProductSheetPopulator(restClient));
+	        	return new RecurringDepositWorkbookPopulator(new OfficeSheetPopulator(restClient, officesContent), new ClientSheetPopulator(restClient, officeId),
+	        			 new PersonnelSheetPopulator(Boolean.TRUE, restClient, officeId), new RecurringDepositProductSheetPopulator(restClient));
 	        else if(template.trim().equals("recurringDepositHistory"))
-	        	 return new RecurringDepositTransactionWorkbookPopulator(restClient, new OfficeSheetPopulator(restClient), new ClientSheetPopulator(restClient), new ExtrasSheetPopulator(restClient));
+	        	 return new RecurringDepositTransactionWorkbookPopulator(restClient, new OfficeSheetPopulator(restClient, officesContent), new ClientSheetPopulator(restClient, officeId), new ExtrasSheetPopulator(restClient));
 	        else if(template.trim().equals("closingOfSavingsAccounts"))
-	        	 return new ClosingOfSavingsAccountsWorkbookPopulator(restClient, new OfficeSheetPopulator(restClient), new ClientSheetPopulator(restClient));
+	        	 return new ClosingOfSavingsAccountsWorkbookPopulator(restClient, new OfficeSheetPopulator(restClient, officesContent), new ClientSheetPopulator(restClient, officeId));
 	        else if(template.trim().equals("journalentries"))
-	        	return new AddJournalEntriesWorkbookPopulator(new OfficeSheetPopulator(restClient), new GlAccountSheetPopulator(restClient),new ExtrasSheetPopulator(restClient));
+	        	return new AddJournalEntriesWorkbookPopulator(new OfficeSheetPopulator(restClient, officesContent), new GlAccountSheetPopulator(restClient),new ExtrasSheetPopulator(restClient));
 	        else if(template.trim().equals("guarantor"))
+	        	return new AddGuarantorWorkbookPopulator(restClient, new OfficeSheetPopulator(restClient, officesContent), new ClientSheetPopulator(restClient, officeId), new CodeValueSheetPopulator(restClient), officeId);
 	        	
-	        return new AddGuarantorWorkbookPopulator(restClient, new OfficeSheetPopulator(restClient), new ClientSheetPopulator(restClient));
 	        throw new IllegalArgumentException("Can't find populator.");
 	    }
 }

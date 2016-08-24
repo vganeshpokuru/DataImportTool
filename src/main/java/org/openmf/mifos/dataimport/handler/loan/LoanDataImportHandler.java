@@ -166,7 +166,7 @@ public class LoanDataImportHandler extends AbstractDataImportHandler {
             repaymentStrategyId = "2";
         else if (repaymentStrategy.equalsIgnoreCase("Creocore Unique"))
             repaymentStrategyId = "3";
-        else if (repaymentStrategy.equalsIgnoreCase("Overdue/Due Fee/Int,Principal"))
+        else if (repaymentStrategy.equalsIgnoreCase("Overdue/Due Fee/Int,Principal") || repaymentStrategy.equalsIgnoreCase("Overdue/Due Fee/Int"))
             repaymentStrategyId = "4";
         else if (repaymentStrategy.equalsIgnoreCase("Principal, Interest, Penalties, Fees Order"))
             repaymentStrategyId = "5";

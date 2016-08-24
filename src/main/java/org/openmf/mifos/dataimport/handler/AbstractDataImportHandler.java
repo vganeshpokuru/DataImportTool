@@ -107,8 +107,14 @@ public abstract class AbstractDataImportHandler implements DataImportHandler {
         		} catch(NullPointerException npe) {
         			return "";
         		}
+        		if(val.getCellType() == Cell.CELL_TYPE_NUMERIC){
+            		return Integer.toString(Double.valueOf(val.getNumberValue()).intValue());
+            	}
         		String res = trimEmptyDecimalPortion(val.getStringValue());
         		return res.trim();
+        	}
+        	if(c.getCellType() == Cell.CELL_TYPE_NUMERIC){
+        		return Integer.toString(Double.valueOf(c.getNumericCellValue()).intValue());
         	}
         	String res = trimEmptyDecimalPortion(c.getStringCellValue().trim());
             return res.trim();
@@ -211,7 +217,7 @@ public abstract class AbstractDataImportHandler implements DataImportHandler {
                     		return ((Double)row.getCell(cell.getColumnIndex() - 1).getNumericCellValue()).intValue();
                     	else if(sheetName.equals("GlAccounts"))
                     		return ((Double)row.getCell(cell.getColumnIndex() - 1).getNumericCellValue()).intValue();
-                    	else if(sheetName.equals("Clients") || sheetName.equals("Center")|| sheetName.equals("Groups") || sheetName.equals("Staff") ) 
+                    	else if(sheetName.equals("Clients") || sheetName.equals("Center")|| sheetName.equals("Groups") || sheetName.equals("Staff") || sheetName.equals("CodeValues")) 
                     		return ((Double)row.getCell(cell.getColumnIndex() + 1).getNumericCellValue()).intValue();
                     }
             }

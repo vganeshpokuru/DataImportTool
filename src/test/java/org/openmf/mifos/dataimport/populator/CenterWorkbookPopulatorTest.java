@@ -42,8 +42,10 @@ public class CenterWorkbookPopulatorTest {
     	 		"\"staffId\": 2,\"staffName\": \"Dzeko, Edin\"}]}");*/
     	
     	Boolean onlyLoanOfficers = Boolean.FALSE;
-    	CenterWorkbookPopulator centerWorkbookPopulator = new CenterWorkbookPopulator(new OfficeSheetPopulator(restClient),
-    			new PersonnelSheetPopulator(onlyLoanOfficers, restClient) );
+    	String officeId = "";
+    	String officesContent = null;
+    	CenterWorkbookPopulator centerWorkbookPopulator = new CenterWorkbookPopulator(new OfficeSheetPopulator(restClient, officesContent),
+    			new PersonnelSheetPopulator(onlyLoanOfficers, restClient, officeId) );
     	centerWorkbookPopulator.downloadAndParse();
     	Workbook centerWorkbook = new HSSFWorkbook();
     	Result result = centerWorkbookPopulator.populate(centerWorkbook);

@@ -367,7 +367,7 @@ public class FixedDepositWorkbookPopulator extends AbstractWorkbookPopulator {
         writeString(INTEREST_CALCULATION_DAYS_IN_YEAR_COL, rowHeader, "# Days in Year*");
         writeString(LOCKIN_PERIOD_COL, rowHeader, "Locked In For");
         writeString(DEPOSIT_AMOUNT_COL, rowHeader, "Deposit Amount");
-        writeString(DEPOSIT_PERIOD_COL, rowHeader, "Deposit Period");
+        writeString(DEPOSIT_PERIOD_COL, rowHeader, "Deposit Period*");
         writeString(EXTERNAL_ID_COL, rowHeader, "External Id");
         
         writeString(CHARGE_ID_1,rowHeader,"Charge Id");
