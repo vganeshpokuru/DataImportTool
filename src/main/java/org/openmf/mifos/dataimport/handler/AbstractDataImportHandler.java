@@ -217,8 +217,10 @@ public abstract class AbstractDataImportHandler implements DataImportHandler {
                     		return ((Double)row.getCell(cell.getColumnIndex() - 1).getNumericCellValue()).intValue();
                     	else if(sheetName.equals("GlAccounts"))
                     		return ((Double)row.getCell(cell.getColumnIndex() - 1).getNumericCellValue()).intValue();
-                    	else if(sheetName.equals("Clients") || sheetName.equals("Center")|| sheetName.equals("Groups") || sheetName.equals("Staff") || sheetName.equals("CodeValues")) 
+                    	else if(sheetName.equals("Clients") || sheetName.equals("Groups") || sheetName.equals("Staff") || sheetName.equals("CodeValues")) 
                     		return ((Double)row.getCell(cell.getColumnIndex() + 1).getNumericCellValue()).intValue();
+                    	else if(sheetName.equals("Center"))
+                    		return ((Double)row.getCell(cell.getColumnIndex() + 2).getNumericCellValue()).intValue();
                     }
             }
           }
