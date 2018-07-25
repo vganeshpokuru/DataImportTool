@@ -103,11 +103,13 @@ public class MifosRestClient implements RestClient {
 
     @Override
     public void createAuthToken() {
-        String url = baseURL + "authentication?username=" + userName + "&password=" + password;
+        String url = baseURL + "authentication?isPasswordEncrypted=false";
+        String body = "{\"username\":\""+userName+"\","+"\"password\":\""+password+"\"}";
+        System.out.println(body);
         try {
             SimpleHttpResponse response = new HttpRequestBuilder().withURL(url).withMethod(Method.POST)
                         .addHeader(Header.FINERACT_TENANT_ID, tenantId)
-                        .addHeader(Header.CONTENT_TYPE, "application/json; charset=utf-8").execute();
+                        .addHeader(Header.CONTENT_TYPE, "application/json; charset=utf-8").withContent(body).execute();
             String content = readContentAndClose(response.getContent());
             AuthToken auth = new Gson().fromJson(content, AuthToken.class);
             authToken = auth.getBase64EncodedAuthenticationKey();
