@@ -17,6 +17,7 @@ import org.openmf.mifos.dataimport.http.RestClient;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class PersonnelSheetPopulator extends AbstractWorkbookPopulator {
@@ -54,7 +55,7 @@ public class PersonnelSheetPopulator extends AbstractWorkbookPopulator {
 	        try {
 	        	client.createAuthToken();
 	        	personnel = new ArrayList<Personnel>();
-	        	content = client.get("staff?limit=-1&officeId=" + officeId);
+	        	content = client.get("staff?officeId=" + officeId);
 	            parseStaff();
 	            content = client.get("offices/" + officeId);
 	            parseOffices();
@@ -81,12 +82,13 @@ public class PersonnelSheetPopulator extends AbstractWorkbookPopulator {
 	    
 	    private void parseStaff() {
 	    	Gson gson = new Gson();
-            JsonElement json = new JsonParser().parse(content);
-            JsonArray array = json.getAsJsonArray();
-            Iterator<JsonElement> iterator = array.iterator();
+	    	JsonParser parser = new JsonParser();
+	        JsonObject obj = parser.parse(content).getAsJsonObject();
+	        JsonArray array = obj.getAsJsonArray("pageItems");
+	        Iterator<JsonElement> iterator = array.iterator();
             staffNameToStaffId = new HashMap<String, Integer>();
             while(iterator.hasNext()) {
-            	json = iterator.next();
+            	JsonElement json = iterator.next();
             	Personnel person = gson.fromJson(json, Personnel.class);
             	if(!onlyLoanOfficers)
             	    personnel.add(person);

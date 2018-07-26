@@ -105,7 +105,6 @@ public class MifosRestClient implements RestClient {
     public void createAuthToken() {
         String url = baseURL + "authentication?isPasswordEncrypted=false";
         String body = "{\"username\":\""+userName+"\","+"\"password\":\""+password+"\"}";
-        System.out.println(body);
         try {
             SimpleHttpResponse response = new HttpRequestBuilder().withURL(url).withMethod(Method.POST)
                         .addHeader(Header.FINERACT_TENANT_ID, tenantId)
