@@ -206,34 +206,34 @@ public abstract class AbstractDataImportHandler implements DataImportHandler {
     }
     
     protected Integer getIdByName (Sheet sheet, String name) {
-    	String sheetName = sheet.getSheetName();
-    	if(!sheetName.equals("Products")) {
-    	for (Row row : sheet) {
+        String sheetName = sheet.getSheetName();
+        if(!sheetName.equals("Products")) {
+        for (Row row : sheet) {
             for (Cell cell : row) {
                 if (cell.getCellType() == Cell.CELL_TYPE_STRING && cell.getRichStringCellValue().getString().trim().equals(name)) {
-                    	if(sheetName.equals("Offices"))
+                        if(sheetName.equals("Offices"))
                             return ((Double)row.getCell(cell.getColumnIndex() - 1).getNumericCellValue()).intValue(); 
-                    	else if(sheetName.equals("Extras"))
-                    		return ((Double)row.getCell(cell.getColumnIndex() - 1).getNumericCellValue()).intValue();
-                    	else if(sheetName.equals("GlAccounts"))
-                    		return ((Double)row.getCell(cell.getColumnIndex() - 1).getNumericCellValue()).intValue();
-                    	else if(sheetName.equals("Clients") || sheetName.equals("Groups") || sheetName.equals("Staff") || sheetName.equals("CodeValues")) 
-                    		return ((Double)row.getCell(cell.getColumnIndex() + 1).getNumericCellValue()).intValue();
-                    	else if(sheetName.equals("Center"))
-                    		return ((Double)row.getCell(cell.getColumnIndex() + 2).getNumericCellValue()).intValue();
+                        else if(sheetName.equals("Extras"))
+                                return ((Double)row.getCell(cell.getColumnIndex() - 1).getNumericCellValue()).intValue();
+                        else if(sheetName.equals("GlAccounts"))
+                                return ((Double)row.getCell(cell.getColumnIndex() - 1).getNumericCellValue()).intValue();
+                        else if(sheetName.equals("Clients") || sheetName.equals("Groups") || sheetName.equals("Staff") || sheetName.equals("CodeValues")) 
+                                return ((Double)row.getCell(cell.getColumnIndex() + 1).getNumericCellValue()).intValue();
+                        else if(sheetName.equals("Center"))
+                                return ((Double)row.getCell(cell.getColumnIndex() + 2).getNumericCellValue()).intValue();
                     }
             }
           }
-    	} else if (sheetName.equals("Products")) {
-    		for(Row row : sheet) {
-    			for(int i = 0; i < 2; i++) {
-    				Cell cell = row.getCell(i);
-    				if(cell.getCellType() == Cell.CELL_TYPE_STRING && cell.getRichStringCellValue().getString().trim().equals(name)) {
-    						return ((Double)row.getCell(cell.getColumnIndex() - 1).getNumericCellValue()).intValue();
-    				}
-    			}
-    		}
-    	}
+        } else if (sheetName.equals("Products")) {
+                for(Row row : sheet) {
+                        for(int i = 0; i < 2; i++) {
+                                Cell cell = row.getCell(i);
+                                if(cell.getCellType() == Cell.CELL_TYPE_STRING && cell.getRichStringCellValue().getString().trim().equals(name)) {
+                                                return ((Double)row.getCell(cell.getColumnIndex() - 1).getNumericCellValue()).intValue();
+                                }
+                        }
+                }
+        }
         return 0;
     }
 
